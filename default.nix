@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, goPath ? "go_1_11" }:
+{ pkgs ? import <nixpkgs> {}, goPath ? "go_1_11", ... }:
 
 with pkgs;
 let

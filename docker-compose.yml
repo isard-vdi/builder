@@ -1,0 +1,15 @@
+version: '3.2'
+services:
+  builder:
+    volumes:
+      - type: bind
+        source: ./public
+        target: /data/public
+        read_only: false
+    ports:
+      - target: 3000
+        published: 1312
+        protocol: tcp
+        mode: host
+    image: isard/builder
+    restart: unless-stopped
