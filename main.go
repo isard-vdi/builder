@@ -57,6 +57,8 @@ func buildNetboot() {
 		jobs[id].finished = time.Now()
 		jobs[id].hasFinished = true
 	}
+
+	log.Println("successfully built " + time.Now().Format("2006-01-02") + " images")
 }
 
 // nixBuild builds the Nix expression
