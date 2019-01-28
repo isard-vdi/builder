@@ -12,7 +12,7 @@ COPY . /go/src/github.com/isard-vdi/builder
 WORKDIR /go/src/github.com/isard-vdi/builder
 
 # Compile the binary
-RUN GO111MODULE=on CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "-s -w" -o builder main.go
+RUN GO111MODULE=on CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "-s -w" -o builder .
 
 #
 # Base stage
