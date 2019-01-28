@@ -33,8 +33,8 @@ func main() {
 	fs := http.FileServer(http.Dir("public"))
 	http.Handle("/", http.StripPrefix("/", fs))
 
-	log.Println("Starting IsardVDI builder at port :3000")
+	log.Println("Starting IsardVDI builder at port :1312")
 	if err := http.ListenAndServe(":3000", nil); err != nil {
-		log.Printf("error listening at port :3000: %v", err)
+		log.Printf("error listening at port :1312: %v", err)
 	}
 }

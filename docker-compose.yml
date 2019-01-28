@@ -7,7 +7,7 @@ services:
         target: /data/public
         read_only: false
     ports:
-      - target: 3000
+      - target: 1312
         published: 1312
         protocol: tcp
         mode: host
