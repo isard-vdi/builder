@@ -42,7 +42,7 @@ WORKDIR /data
 VOLUME [ "/data/public" ]
 
 # Expose the required port
-EXPOSE 3000
+EXPOSE 1312
 
 # Run the service
 CMD [ "/app/builder" ]
