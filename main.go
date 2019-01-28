@@ -34,7 +34,7 @@ func main() {
 	http.Handle("/", http.StripPrefix("/", fs))
 
 	log.Println("Starting IsardVDI builder at port :1312")
-	if err := http.ListenAndServe(":3000", nil); err != nil {
+	if err := http.ListenAndServe(":1312", nil); err != nil {
 		log.Printf("error listening at port :1312: %v", err)
 	}
 }
