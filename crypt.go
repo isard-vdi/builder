@@ -19,22 +19,35 @@
 package main
 
 import (
-	"log"
-	"net/http"
-
-	"github.com/robfig/cron"
+	"crypto/sha256"
+	"fmt"
+	"io"
+	"os"
 )
 
-func main() {
-	c := cron.New()
-	c.AddFunc("0 0 2 * * *", buildNetboot)
-	c.Start()
-
-	fs := http.FileServer(http.Dir("public"))
-	http.Handle("/", http.StripPrefix("/", fs))
-
-	log.Println("Starting IsardVDI builder at port :3000")
-	if err := http.ListenAndServe(":3000", nil); err != nil {
-		log.Printf("error listening at port :3000: %v", err)
+// getSHA256 calculates the SHA256 of a file and returns it
+func getSHA256(src string) (string, error) {
+	f, err := os.Open(src)
+	if err != nil {
+		return "", fmt.Errorf("error checking the SHA256: error reading %s: %v", src, err)
 	}
+	defer f.Close()
+
+	h := sha256.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return "", fmt.Errorf("error checking the SHA256: %v", err)
+	}
+
+	return fmt.Sprintf("%x", h.Sum(nil)), nil
+}
+
+// sha256sum returns a string with the sha256sum format. In the first array item goes the filename and in the second the SHA256
+func sha256sum(sums [][2]string) string {
+	var rsp string
+
+	for _, sum := range sums {
+		rsp += sum[1] + " *" + sum[0] + "\n"
+	}
+
+	return rsp
 }
