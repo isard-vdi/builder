@@ -16,38 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package builder
+package main
 
 import (
-	"crypto/sha256"
-	"fmt"
-	"io"
-	"os"
+	"github.com/isard-vdi/builder"
 )
 
-// getSHA256 calculates the SHA256 of a file and returns it
-func getSHA256(src string) (string, error) {
-	f, err := os.Open(src)
-	if err != nil {
-		return "", fmt.Errorf("error checking the SHA256: error reading %s: %v", src, err)
-	}
-	defer f.Close()
-
-	h := sha256.New()
-	if _, err := io.Copy(h, f); err != nil {
-		return "", fmt.Errorf("error checking the SHA256: %v", err)
-	}
-
-	return fmt.Sprintf("%x", h.Sum(nil)), nil
-}
-
-// sha256sum returns a string with the sha256sum format. In the first array item goes the filename and in the second the SHA256
-func sha256sum(sums [][2]string) string {
-	var rsp string
-
-	for _, sum := range sums {
-		rsp += sum[1] + " *" + sum[0] + "\n"
-	}
-
-	return rsp
+func main() {
+	builder.BuildNetboot()
 }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main
+package builder
 
 import (
 	"fmt"
@@ -64,8 +64,8 @@ func nixBuld(id ksuid.KSUID, expression, result string, args map[string]string) 
 	return nil
 }
 
-// buildNetboot builds the Netboot images for all the CPU architectures. It also manages the image publication
-func buildNetboot() {
+// BuildNetboot builds the Netboot images for all the CPU architectures. It also manages the image publication
+func BuildNetboot() {
 	for _, arch := range supportedArchitectures {
 		id := ksuid.New()
 		jobs[id] = &jobStatus{

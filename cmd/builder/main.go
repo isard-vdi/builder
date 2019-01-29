@@ -22,12 +22,14 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/isard-vdi/builder"
+
 	"github.com/robfig/cron"
 )
 
 func main() {
 	c := cron.New()
-	c.AddFunc("0 0 2 * * *", buildNetboot)
+	c.AddFunc("0 0 2 * * *", builder.BuildNetboot)
 	c.Start()
 
 	fs := http.FileServer(http.Dir("public"))

@@ -11,8 +11,9 @@ COPY . /go/src/github.com/isard-vdi/builder
 # Move to the correct directory
 WORKDIR /go/src/github.com/isard-vdi/builder
 
-# Compile the binary
-RUN GO111MODULE=on CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "-s -w" -o builder .
+# Compile the binaries
+RUN GO111MODULE=on CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "-s -w" -o builder cmd/builder/main.go
+RUN GO111MODULE=on CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "-s -w" -o force-build cmd/builder/force-build.go
 
 #
 # Base stage
@@ -25,8 +26,9 @@ FROM nixos/nix
 RUN nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
 RUN nix-channel --update
 
-# Copy the compiled binary from the build stage
+# Copy the compiled binaries from the build stage
 COPY --from=build /go/src/github.com/isard-vdi/builder/builder /app/builder
+COPY --from=build /go/src/github.com/isard-vdi/builder/force-build /bin/force-build
 
 # Create the data directory
 RUN mkdir /data
