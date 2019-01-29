@@ -40,7 +40,6 @@ var jobs = map[ksuid.KSUID]*jobStatus{}
 // jobStatus is the status of each job
 type jobStatus struct {
 	hasFinished bool
-	started     time.Time
 	finished    time.Time
 }
 
@@ -66,22 +65,30 @@ func nixBuld(id ksuid.KSUID, expression, result string, args map[string]string) 
 
 // BuildNetboot builds the Netboot images for all the CPU architectures. It also manages the image publication
 func BuildNetboot() {
+	var error = false
+
 	for _, arch := range supportedArchitectures {
 		id := ksuid.New()
 		jobs[id] = &jobStatus{
 			hasFinished: false,
-			started:     time.Now(),
 		}
 
-		if err := nixBuld(id, "build-netboot.nix", "build-netboot-"+arch+"-result", map[string]string{"system": netbootArchitectures[arch]}); err != nil {
-			log.Printf("error building netboot for %s: %v", arch, err)
-		} else if err := publishNetboot(arch); err != nil {
-			log.Printf("error moving the netboot for %s to webroot: %v", arch, err)
+		// try to build the images up to 3 times (in case the image build fails)
+		for i := 0; i == 0 || error && i < 3; i++ {
+			if err := nixBuld(id, "build-netboot.nix", "build-netboot-"+arch+"-result", map[string]string{"system": netbootArchitectures[arch]}); err != nil {
+				error = true
+				log.Printf("error building netboot for %s: %v", arch, err)
+			} else if err := publishNetboot(arch); err != nil {
+				error = true
+				log.Printf("error moving the netboot for %s to webroot: %v", arch, err)
+			}
 		}
 
 		jobs[id].finished = time.Now()
 		jobs[id].hasFinished = true
 	}
 
-	log.Println("successfully built " + time.Now().Format("2006-01-02") + " images")
+	if !error {
+		log.Println("successfully built " + time.Now().Format("2006-01-02") + " images")
+	}
 }
